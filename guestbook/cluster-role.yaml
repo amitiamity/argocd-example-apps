@@ -1,0 +1,81 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-application-controller-networkpolicies
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+- apiGroups: [""]
+  resources:
+  - namespaces
+  - pods
+  - services
+  - configmaps
+  - secrets
+  - persistentvolumeclaims
+  - persistentvolumes
+  - endpoints
+  - replicationcontrollers
+  - events
+  - resourcequotas
+  - limitranges
+  - persistentvolumeclaims/status
+  - persistentvolumes/status
+  - endpoints/status
+  - replicationcontrollers/status
+  - events/status
+  - resourcequotas/status
+  - limitranges/status
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["apps"]
+  resources:
+  - deployments
+  - statefulsets
+  - daemonsets
+  - replicasets
+  - controllerrevisions
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["networking.k8s.io"]
+  resources:
+  - networkpolicies
+  - ingressclasses
+  - ingresses
+  - ingress
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources:
+  - validatingwebhookconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["argoproj.io"]
+  resources:
+  - applications
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argocd-application-controller-networkpolicies
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argocd-application-controller-networkpolicies
+subjects:
+- kind: ServiceAccount
+  name: argocd-application-controller
+  namespace: argocd
